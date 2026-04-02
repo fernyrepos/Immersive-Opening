@@ -43,6 +43,7 @@ namespace ImmersiveOpening
         public override void PreOpen()
         {
             base.PreOpen();
+            Root_OnGUI_Patch.isImmersiveOpeningActive = true;
             Find.MusicManagerPlay.disabled = true;
             mapCenter = Find.CurrentMap.Center;
             Find.ScreenshotModeHandler.Active = true;
@@ -154,7 +155,7 @@ namespace ImmersiveOpening
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
 
-            var textRect = new Rect(0f, inRect.height * 0.8f, inRect.width, inRect.height * 0.2f);
+            var textRect = new Rect(inRect.width / 6f, inRect.height * 0.8f, inRect.width * 2f / 3f, inRect.height * 0.2f);
             Widgets.Label(textRect, sentences[currentSentenceIndex]);
 
             GUI.color = Color.white;
@@ -170,6 +171,7 @@ namespace ImmersiveOpening
         public override void PostClose()
         {
             base.PostClose();
+            Root_OnGUI_Patch.isImmersiveOpeningActive = false;
             Find.CameraDriver.SetRootPosAndSize(mapCenter.ToVector3Shifted(), CameraDriver.StartingSize);
             Find.MusicManagerPlay.ForceSilenceFor(7f);
             Find.MusicManagerPlay.disabled = false;
