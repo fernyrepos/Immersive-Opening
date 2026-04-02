@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <IO_TimeBetweenSentences>Time between sentences: {0}s</IO_TimeBetweenSentences>
+    <IO_Letterboxing>Letterboxing</IO_Letterboxing>
+    <IO_ClickToStart>Click to start</IO_ClickToStart>
+</LanguageData>
