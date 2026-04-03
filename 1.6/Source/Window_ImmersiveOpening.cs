@@ -24,6 +24,7 @@ namespace ImmersiveOpening
         private SoundDef closeSound;
         private IntVec3 mapCenter;
         private float simulatedTickTimer;
+        private bool waitingToStart = true;
 
         public Window_ImmersiveOpening(List<string> sentences, SoundDef closeSound)
         {
@@ -47,7 +48,6 @@ namespace ImmersiveOpening
             Find.MusicManagerPlay.disabled = true;
             mapCenter = Find.CurrentMap.Center;
             Find.ScreenshotModeHandler.Active = true;
-            NextSentence();
         }
 
         private void NextSentence()
@@ -57,6 +57,13 @@ namespace ImmersiveOpening
             {
                 waitingForClick = true;
                 allDoneTime = Time.realtimeSinceStartup;
+
+                var resetPos = mapCenter.ToVector3Shifted();
+                Find.CameraDriver.panner.PanTo(
+                    new CameraPanner.Interpolant(resetPos, CameraDriver.StartingSize),
+                    new CameraPanner.Interpolant(resetPos, CameraDriver.StartingSize),
+                    0f
+                );
                 return;
             }
 
@@ -89,7 +96,7 @@ namespace ImmersiveOpening
                 simulatedTickTimer -= 1f / 60f;
             }
 
-            if (!waitingForClick)
+            if (!waitingForClick && !waitingToStart)
             {
                 float elapsed = Time.realtimeSinceStartup - sentenceStartTime;
                 if (elapsed >= ImmersiveOpeningMod.settings.timeBetweenSentences)
@@ -101,6 +108,25 @@ namespace ImmersiveOpening
 
         public override void DoWindowContents(Rect inRect)
         {
+            if (waitingToStart)
+            {
+                Widgets.DrawBoxSolid(inRect, Color.black);
+                
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                GUI.color = Color.white;
+                Widgets.Label(inRect, "IO_ClickToBeginOpening".Translate());
+                Text.Anchor = TextAnchor.UpperLeft;
+
+                if (Event.current.type == EventType.MouseDown)
+                {
+                    waitingToStart = false;
+                    NextSentence();
+                    Event.current.Use();
+                }
+                return;
+            }
+
             if (!waitingForClick && Event.current.type == EventType.MouseDown)
             {
                 NextSentence();
@@ -172,7 +198,14 @@ namespace ImmersiveOpening
         {
             base.PostClose();
             Root_OnGUI_Patch.isImmersiveOpeningActive = false;
-            Find.CameraDriver.SetRootPosAndSize(mapCenter.ToVector3Shifted(), CameraDriver.StartingSize);
+            
+            var resetPos = mapCenter.ToVector3Shifted();
+            Find.CameraDriver.panner.PanTo(
+                new CameraPanner.Interpolant(resetPos, CameraDriver.StartingSize),
+                new CameraPanner.Interpolant(resetPos, CameraDriver.StartingSize),
+                0f
+            );
+            Find.CameraDriver.SetRootPosAndSize(resetPos, CameraDriver.StartingSize);
             Find.MusicManagerPlay.ForceSilenceFor(7f);
             Find.MusicManagerPlay.disabled = false;
             Find.WindowStack.Notify_GameStartDialogClosed();
