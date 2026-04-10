@@ -2,6 +2,6 @@
 <LanguageData>
     <IO_TimeBetweenSentences>Time between sentences: {0}s</IO_TimeBetweenSentences>
     <IO_Letterboxing>Letterboxing</IO_Letterboxing>
-    <IO_ClickToStart>Click to start</IO_ClickToStart>
-    <IO_ClickToBeginOpening>Click to begin opening</IO_ClickToBeginOpening>
+    <IO_ClickToStart>Click to start.</IO_ClickToStart>
+    <IO_ClickToBeginOpening>Click to start.</IO_ClickToBeginOpening>
 </LanguageData>
