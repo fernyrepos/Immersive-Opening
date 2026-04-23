@@ -13,6 +13,7 @@ namespace ImmersiveOpening
         {
             if (Find.GameInitData.startedFromEntry)
             {
+                Root_OnGUI_Patch.Patch();
                 Find.WindowStack.Notify_GameStartDialogOpened();
                 string rawText = __instance.text.NullOrEmpty() ? __instance.textKey.TranslateSimple() : __instance.text;
                 Find.Archive.Add(new ArchivedDialog(rawText));

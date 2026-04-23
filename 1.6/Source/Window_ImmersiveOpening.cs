@@ -198,7 +198,8 @@ namespace ImmersiveOpening
         {
             base.PostClose();
             Root_OnGUI_Patch.isImmersiveOpeningActive = false;
-            
+            Root_OnGUI_Patch.Unpatch();
+
             var resetPos = mapCenter.ToVector3Shifted();
             Find.CameraDriver.panner.PanTo(
                 new CameraPanner.Interpolant(resetPos, CameraDriver.StartingSize),

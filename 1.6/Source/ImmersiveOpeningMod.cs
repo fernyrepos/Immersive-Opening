@@ -6,12 +6,15 @@ namespace ImmersiveOpening
 {
     public class ImmersiveOpeningMod : Mod
     {
+        public const string HarmonyId = "ImmersiveOpeningMod";
+        public static Harmony harmony;
         public static ImmersiveOpeningSettings settings;
 
         public ImmersiveOpeningMod(ModContentPack pack) : base(pack)
         {
             settings = GetSettings<ImmersiveOpeningSettings>();
-            new Harmony("ImmersiveOpeningMod").PatchAll();
+            harmony = new Harmony(HarmonyId);
+            harmony.PatchAll();
         }
 
         public override void DoSettingsWindowContents(Rect inRect)

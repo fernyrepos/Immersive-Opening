@@ -5,10 +5,36 @@ using Verse;
 
 namespace ImmersiveOpening
 {
-	[HarmonyPatch(typeof(Root), nameof(Root.OnGUI))]
 	public static class Root_OnGUI_Patch
 	{
+		private static bool isPatched;
 		public static bool isImmersiveOpeningActive;
+		public static void Patch()
+		{
+			if (isPatched)
+			{
+				return;
+			}
+
+			var original = AccessTools.Method(typeof(Root), nameof(Root.OnGUI));
+			var transpiler = AccessTools.Method(typeof(Root_OnGUI_Patch), nameof(Transpiler));
+			ImmersiveOpeningMod.harmony.Patch(original, transpiler: new HarmonyMethod(transpiler));
+			isPatched = true;
+		}
+
+		public static void Unpatch()
+		{
+			if (!isPatched)
+			{
+				return;
+			}
+
+			var original = AccessTools.Method(typeof(Root), nameof(Root.OnGUI));
+			var transpiler = AccessTools.Method(typeof(Root_OnGUI_Patch), nameof(Transpiler));
+			ImmersiveOpeningMod.harmony.Unpatch(original, transpiler);
+			isPatched = false;
+		}
+
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			var uiRootOnGUIMethod = AccessTools.Method(typeof(UIRoot), nameof(UIRoot.UIRootOnGUI));
